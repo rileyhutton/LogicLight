@@ -19,7 +19,15 @@ jobs:
       - name: Build
         run: |
           chmod +x build.sh
-          ./build.sh
+          swiftc --version
+          set +e
+          ./build.sh 2>&1 | tee build.log
+          status=${PIPESTATUS[0]}
+          # Surface compiler errors as annotations so they're visible without the raw log.
+          grep -E '^[^ ]+\.swift:[0-9]+:[0-9]+: error:' build.log | sort -u | head -40 | \
+            sed -E 's#^([^:]+):([0-9]+):([0-9]+): error: (.*)$#::error file=\1,line=\2,col=\3::\4#'
+          grep -E '^(error|fatal|ld:)' build.log | sort -u | head -20 | sed 's/^/::error::/'
+          exit $status
 
       - name: Zip app
         run: ditto -c -k --keepParent LogicLight.app LogicLight.zip

@@ -88,8 +88,11 @@ final class HomeAssistant {
         return req
     }
 
-    func set(on: Bool, completion: @escaping (Error?) -> Void) {
-        guard let req = request(on: on) else { completion(HAError.notConfigured); return }
+    func set(on: Bool, completion: @escaping @MainActor (Error?) -> Void) {
+        guard let req = request(on: on) else {
+            DispatchQueue.main.async { completion(HAError.notConfigured) }
+            return
+        }
         URLSession.shared.dataTask(with: req) { _, response, error in
             let code = (response as? HTTPURLResponse)?.statusCode ?? 0
             DispatchQueue.main.async {
