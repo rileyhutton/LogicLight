@@ -10,10 +10,10 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 echo "Compiling (Apple Silicon + Intel)…"
 BUILD="$(mktemp -d)"
 for arch in arm64 x86_64; do
-  swiftc -O -swift-version 5 \
+  swiftc -O -swift-version 5 -parse-as-library \
     -target "$arch-apple-macos13.0" \
     -o "$BUILD/LogicLight-$arch" \
-    Sources/main.swift
+    Sources/LogicLight.swift
 done
 lipo -create "$BUILD"/LogicLight-* -output "$APP/Contents/MacOS/LogicLight"
 rm -rf "$BUILD"
