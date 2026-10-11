@@ -1,5 +1,7 @@
 # LogicLight
 
+-- NOTE! Entirely AI Generated work. --
+
 A tiny macOS menu-bar app that turns a [Home Assistant](https://www.home-assistant.io/) light on while **Logic Pro is recording**, and off when it stops. An "on air" light for your studio, no MIDI routing or control surfaces needed.
 
 ## Install
