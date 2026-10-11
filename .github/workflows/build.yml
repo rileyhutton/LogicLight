@@ -4,8 +4,6 @@ on:
   push:
     branches: [main]
   pull_request:
-  release:
-    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -38,8 +36,21 @@ jobs:
           name: LogicLight
           path: LogicLight.zip
 
+      - name: Read version
+        id: version
+        run: echo "v=$(tr -d '[:space:]' < VERSION)" >> "$GITHUB_OUTPUT"
+
+      # Every push to main publishes (or refreshes) the release for the version in VERSION.
+      # Bump VERSION to cut a new release.
       - name: Publish release
-        if: github.event_name == 'release'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ steps.version.outputs.v }}
+          name: LogicLight ${{ steps.version.outputs.v }}
+          target_commitish: ${{ github.sha }}
           files: LogicLight.zip
+          body: |
+            Download **LogicLight.zip**, unzip it and move **LogicLight.app** to Applications.
+            It isn't notarised, so the first time right-click it and choose **Open** (or run `xattr -cr /Applications/LogicLight.app`).
+            See the README for setup.

@@ -29,7 +29,7 @@ If the menu says *record button not found*, or the light doesn't follow recordin
 ./build.sh
 ```
 
-Needs Xcode or the Command Line Tools. GitHub Actions builds every push, and publishing a GitHub Release attaches the built app to it.
+Needs Xcode or the Command Line Tools. GitHub Actions builds every push. Pushes to `main` publish a release for the version in `VERSION`, so bump it to cut a new one.
 
 ## License
 
